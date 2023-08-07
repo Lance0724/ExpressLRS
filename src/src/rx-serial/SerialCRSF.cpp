@@ -16,22 +16,22 @@ void SerialCRSF::setLinkQualityStats(uint16_t lq, uint16_t rssi)
 
 void SerialCRSF::sendLinkStatisticsToFC()
 {
-    constexpr uint8_t outBuffer[] = {
-        LinkStatisticsFrameLength + 4,
-        CRSF_ADDRESS_FLIGHT_CONTROLLER,
-        LinkStatisticsFrameLength + 2,
-        CRSF_FRAMETYPE_LINK_STATISTICS
-    };
+    // constexpr uint8_t outBuffer[] = {
+    //     LinkStatisticsFrameLength + 4,
+    //     CRSF_ADDRESS_FLIGHT_CONTROLLER,
+    //     LinkStatisticsFrameLength + 2,
+    //     CRSF_FRAMETYPE_LINK_STATISTICS
+    // };
 
-    uint8_t crc = crsf_crc.calc(outBuffer[3]);
-    crc = crsf_crc.calc((byte *)&CRSF::LinkStatistics, LinkStatisticsFrameLength, crc);
+    // uint8_t crc = crsf_crc.calc(outBuffer[3]);
+    // crc = crsf_crc.calc((byte *)&CRSF::LinkStatistics, LinkStatisticsFrameLength, crc);
 
-    if (_fifo.ensure(outBuffer[0] + 1))
-    {
-        _fifo.pushBytes(outBuffer, sizeof(outBuffer));
-        _fifo.pushBytes((byte *)&CRSF::LinkStatistics, LinkStatisticsFrameLength);
-        _fifo.push(crc);
-    }
+    // if (_fifo.ensure(outBuffer[0] + 1))
+    // {
+    //     _fifo.pushBytes(outBuffer, sizeof(outBuffer));
+    //     _fifo.pushBytes((byte *)&CRSF::LinkStatistics, LinkStatisticsFrameLength);
+    //     _fifo.push(crc);
+    // }
 }
 
 uint32_t SerialCRSF::sendRCFrameToFC(bool frameAvailable, uint32_t *channelData)
@@ -41,7 +41,7 @@ uint32_t SerialCRSF::sendRCFrameToFC(bool frameAvailable, uint32_t *channelData)
 
     constexpr uint8_t outBuffer[] = {
         // No need for length prefix as we aren't using the FIFO
-        CRSF_ADDRESS_FLIGHT_CONTROLLER,
+        CRSF_ADDRESS_CRSF_TRANSMITTER,
         RCframeLength + 2,
         CRSF_FRAMETYPE_RC_CHANNELS_PACKED
     };
@@ -75,13 +75,13 @@ uint32_t SerialCRSF::sendRCFrameToFC(bool frameAvailable, uint32_t *channelData)
 
 void SerialCRSF::sendMSPFrameToFC(uint8_t* data)
 {
-    const uint8_t totalBufferLen = CRSF_FRAME_SIZE(data[1]);
-    if (totalBufferLen <= CRSF_FRAME_SIZE_MAX)
-    {
-        data[0] = CRSF_ADDRESS_FLIGHT_CONTROLLER;
-        _fifo.push(totalBufferLen);
-        _fifo.pushBytes(data, totalBufferLen);
-    }
+    // const uint8_t totalBufferLen = CRSF_FRAME_SIZE(data[1]);
+    // if (totalBufferLen <= CRSF_FRAME_SIZE_MAX)
+    // {
+    //     data[0] = CRSF_ADDRESS_FLIGHT_CONTROLLER;
+    //     _fifo.push(totalBufferLen);
+    //     _fifo.pushBytes(data, totalBufferLen);
+    // }
 }
 
 void SerialCRSF::processByte(uint8_t byte)
@@ -102,9 +102,9 @@ void SerialCRSF::processByte(uint8_t byte)
     }
     if (telemetry.ShouldSendDeviceFrame())
     {
-        uint8_t deviceInformation[DEVICE_INFORMATION_LENGTH];
-        CRSF::GetDeviceInformation(deviceInformation, 0);
-        CRSF::SetExtendedHeaderAndCrc(deviceInformation, CRSF_FRAMETYPE_DEVICE_INFO, DEVICE_INFORMATION_FRAME_SIZE, CRSF_ADDRESS_CRSF_RECEIVER, CRSF_ADDRESS_FLIGHT_CONTROLLER);
-        sendMSPFrameToFC(deviceInformation);
+        // uint8_t deviceInformation[DEVICE_INFORMATION_LENGTH];
+        // CRSF::GetDeviceInformation(deviceInformation, 0);
+        // CRSF::SetExtendedHeaderAndCrc(deviceInformation, CRSF_FRAMETYPE_DEVICE_INFO, DEVICE_INFORMATION_FRAME_SIZE, CRSF_ADDRESS_CRSF_RECEIVER, CRSF_ADDRESS_FLIGHT_CONTROLLER);
+        // sendMSPFrameToFC(deviceInformation);
     }
 }
