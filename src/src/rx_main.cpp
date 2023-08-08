@@ -979,7 +979,8 @@ static bool ICACHE_RAM_ATTR ProcessRfPacket_SYNC(uint32_t const now, OTA_Sync_s 
         OtaNonce = otaSync->nonce;
         TentativeConnection(now);
         // connectionHasModelMatch must come after TentativeConnection, which resets it
-        connectionHasModelMatch = modelMatched;
+        // connectionHasModelMatch = modelMatched;
+        connectionHasModelMatch = true;
         return true;
     }
 

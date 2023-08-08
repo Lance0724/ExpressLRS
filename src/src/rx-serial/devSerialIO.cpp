@@ -42,6 +42,10 @@ static int timeout()
     {
         duration = serialIO->sendRCFrameToFC(frameAvailable, ChannelData);
     }
+    else 
+    {
+        // TODO SEND SYNC_CMD
+    }
     frameAvailable = false;
     // still get telemetry and send link stats if theres no model match
     serialIO->handleUARTout();
